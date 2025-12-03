@@ -1,5 +1,5 @@
 {
-  "name": "my-turborepo",
+  "name": "trading-n8n-monorepo",
   "private": true,
   "scripts": {
     "build": "turbo run build",
