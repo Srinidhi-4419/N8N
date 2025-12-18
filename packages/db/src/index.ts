@@ -2,7 +2,8 @@ import mongoose,{Schema} from 'mongoose'
 const userschema=new Schema({
     username:{
         type:String,
-        required:true
+        required:true,
+        unique:true
     },
     password:{
         type:String,
@@ -73,29 +74,44 @@ const WorkflowSchema=new mongoose.Schema({
     nodes:[workflownodesSchema],
     edges:[EdgeSchema]
 })
-const CredentialTypeSchema=new mongoose.Schema({
-    title:{
-        type:String,
-        reqired:true
-    },
-    required:{type:Boolean,required:true}
-})
-const NodesSchema=new mongoose.Schema({
-    title:{
-        type:String,
-        required:true
-    },
-    description:{
-        type:String,
-        required:true
-    },
-    type:{
-        type:String,
-        enum:["action","trigger"],
-        required:true
-    },
-    credentials:[CredentialTypeSchema]
-})
+
+const CredentialTypeSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  required: { type: Boolean, required: true }
+}, { _id: false });
+
+const NodeFieldSchema = new Schema({
+  kind: { type: String, enum: ["string", "number", "select", "boolean"], required: true },
+  title: { type: String, required: true },
+  key: { type: String, required: true },
+  description: { type: String },
+  values: [String],
+  required: { type: Boolean, default: false }
+}, { _id: false });
+
+const NodesSchema = new Schema({
+  // UNIQUE MACHINE ID (lighter, hyperliquid, backpack, timer…)
+  type: { type: String, required: true },  
+
+  // ACTION or TRIGGER
+  kind: { type: String, enum: ["ACTION", "TRIGGER"], required: true },
+
+  // For UI display
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+
+  // "default" (from seed) or "admin"
+  source: { type: String, default: "default" },
+
+  // credentials the node requires
+  credentialsType: [CredentialTypeSchema],
+
+  // metadataSchema defines what fields UI should show
+  metadataSchema: [NodeFieldSchema],
+
+  category: { type: String }
+}, { timestamps: true });
+
 const ExecutionSchema=new mongoose.Schema({
     workflowId:{
         type:mongoose.Types.ObjectId,

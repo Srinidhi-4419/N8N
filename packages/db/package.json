@@ -1,19 +1,20 @@
 {
   "name": "db",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "exports":{
-    "./client":"./index.ts"
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+   "exports": {
+    ".": "./dist/index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@types/mongoose": "^5.11.96",
     "mongoose": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/mongoose": "^5.11.96",
+    "typescript": "^5.0.0"
   }
 }

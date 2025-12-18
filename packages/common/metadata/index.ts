@@ -1,4 +1,4 @@
-export const SUPPORTED_ASSETS=["BTC","SOL"];
+export const SUPPORTED_ASSETS=["BTC","SOL","ETH"];
 export type TradingMetadata={
     type:"Long" | "Short",
     qty:number,

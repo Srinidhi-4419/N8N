@@ -1,4 +1,4 @@
-import type { NodeKind } from "./CreateWorkflow";
+import { useState, useEffect } from "react";
 import {
   SheetContent,
   SheetDescription,
@@ -15,121 +15,171 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { Button } from "./ui/button";
-import { SUPPORTED_ASSETS } from "./TriggerSheet";
 
-const SUPPORTED_ACTIONS = [
-  {
-    id: "hyperliquid",
-    title: "Hyperliquid",
-    description: "Place a trade on hyperliquid",
-  },
-  {
-    id: "lighter",
-    title: "Lighter",
-    description: "Place a trade on lighter",
-  },
-  {
-    id: "backpack",
-    title: "Backpack",
-    description: "Place a trade on Backpack",
-  },
-];
+import { Input } from "@/components/ui/input";
+import { Button } from "./ui/button";
+
+import { apiListNodes } from "../lib/http";
+
 export function ActionSheet({
   onSelect,
 }: {
-  onSelect: (data: { type: NodeKind; metadata: any }) => void;
+  onSelect: (data: { type: string; metadata: any }) => void;
 }) {
-  const [metadata, setMetadata] = useState<TradingMetadata | {}>({});
-  const [selectedaction, setselectedaction] = useState<string>(
-    SUPPORTED_ACTIONS[0].id
-  );
+  const [nodes, setNodes] = useState<any[]>([]);
+  const [selected, setSelected] = useState<string>("");
+  const [metadata, setMetadata] = useState<Record<string, any>>({});
+
+  useEffect(() => {
+    async function loadNodes() {
+      const allNodes = await apiListNodes();
+      console.log(allNodes)
+      // Only ACTION-type nodes
+      const actionNodes = allNodes.filter((n) => n.kind === "ACTION");
+
+      setNodes(actionNodes);
+
+      if (actionNodes.length > 0) {
+        setSelected(actionNodes[0].type); // select machine ID like "lighter"
+      }
+    }
+
+    loadNodes();
+  }, []);
+
+  const selectedNode = nodes.find((n) => n.type === selected);
+
+  function renderField(field: any) {
+    const key = field.key;
+
+    // SELECT DROPDOWN
+    if (field.kind === "select") {
+      return (
+        <div key={key} className="mt-4">
+          <label className="block mb-1 font-medium">{field.title}</label>
+
+          <Select
+            value={metadata[key]}
+            onValueChange={(value) =>
+              setMetadata((m) => ({ ...m, [key]: value }))
+            }
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder={field.description || "Choose"} />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectGroup>
+                {field.values?.map((v: string) => (
+                  <SelectItem key={v} value={v}>
+                    {v}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      );
+    }
+
+    // NUMBER INPUT
+    if (field.kind === "number") {
+      return (
+        <div key={key} className="mt-4">
+          <label className="block mb-1 font-medium">{field.title}</label>
+
+          <Input
+            type="number"
+            placeholder={field.description}
+            onChange={(e) =>
+              setMetadata((m) => ({ ...m, [key]: Number(e.target.value) }))
+            }
+          />
+        </div>
+      );
+    }
+
+    // STRING INPUT
+    if (field.kind === "string") {
+      return (
+        <div key={key} className="mt-4">
+          <label className="block mb-1 font-medium">{field.title}</label>
+
+          <Input
+            type="text"
+            placeholder={field.description}
+            onChange={(e) =>
+              setMetadata((m) => ({ ...m, [key]: e.target.value }))
+            }
+          />
+        </div>
+      );
+    }
+
+    return null;
+  }
 
   return (
-    <SheetContent>
+    <SheetContent className="w-[450px]">
       <SheetHeader>
-        <SheetTitle>Select the action  </SheetTitle>
-        <SheetDescription>Select the type of action you need.</SheetDescription>
+        <SheetTitle>Select Action</SheetTitle>
+        <SheetDescription>Configure your action parameters.</SheetDescription>
       </SheetHeader>
 
-      <Select
-        value={selectedaction}
-        onValueChange={(value) => setselectedaction(value)}
-      >
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select action" />
-        </SelectTrigger>
+      {/* ACTION SELECTOR */}
+      <div className="mt-4">
+        <label className="font-medium block mb-1">Action Type</label>
 
-        <SelectContent>
-          <SelectGroup>
-            {SUPPORTED_ACTIONS.map(({ id, title }) => (
-              <SelectItem key={id} value={id}>
-                {title}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      {(selectedaction === "hyperliquid" || selectedaction === "lighter" || selectedaction === "backpack" ) && <div>
-        <div className="pt-4">
-            Type
-        </div>
-          <Select
-        value={metadata?.type}
-        onValueChange={(value) => setMetadata(metadata=>({
-          ...metadata,
-          type:value
-        }))}
-      >
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select action" />
-        </SelectTrigger>
+        <Select value={selected} onValueChange={setSelected}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select action" />
+          </SelectTrigger>
 
-        <SelectContent>
-          <SelectGroup>
-           <SelectItem value={"long"}>LONG</SelectItem>
-           <SelectItem value={"short"}>SHORT</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-        <div className="pt-4">
-            Symbol
-        </div>
-        <Select
-        value={metadata?.symbol}
-        onValueChange={(value) => setMetadata(metadata=>({
-          ...metadata,
-          symbol:value
-        }))}
-      >
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select action" />
-        </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {nodes.map((node) => (
+                <SelectItem key={node.type} value={node.type}>
+                  {node.title}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
 
-        <SelectContent>
-          <SelectGroup>
-           {SUPPORTED_ASSETS.map(asset=><SelectItem key={asset} value={asset}>
-            {asset}
-           </SelectItem>)}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-        <div className="pt-4">
-            Quantity
-        </div>
-         <Input type="text" onChange={(e)=>setMetadata(m=>({
-          ...m,
-          qty:Number(e.target.value)
-        }))}></Input>
-        </div>}
+      {/* DYNAMIC METADATA UI FIELDS */}
+      {selectedNode?.metadataSchema?.map((field: any) => renderField(field))}
+              {/* CREDENTIAL FIELDS */}
+{selectedNode?.credentialsType?.length > 0 && (
+  <div className="mt-6">
+    <h3 className="font-semibold mb-2">Credentials</h3>
+
+    {selectedNode.credentialsType.map((cred: any) => (
+      <div key={cred.title} className="mt-3">
+        <label className="block mb-1 font-medium">
+          {cred.title} {cred.required ? "*" : ""}
+        </label>
+
+        <Input
+          type="text"
+          placeholder={`Enter ${cred.title}`}
+          onChange={(e) =>
+            setMetadata((m) => ({
+              ...m,
+              [cred.title]: e.target.value,
+            }))
+          }
+        />
+      </div>
+    ))}
+  </div>
+)}
 
       <SheetFooter>
-        <Button type="submit"
+        <Button
           onClick={() =>
             onSelect({
-              type:selectedaction as NodeKind,
+              type: selected, // machine ID like "lighter"
               metadata,
             })
           }

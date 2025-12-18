@@ -1,0 +1,15 @@
+{
+  "type": "lighter",
+  "kind": "ACTION",
+  "title": "Lighter Exchange",
+  "description": "Place a trade on Lighter",
+  "source": "default",
+  "credentialsType": [
+    { "title": "API_KEY", "required": true }
+  ],
+  "metadataSchema": [
+    { "key": "side", "kind": "select", "title": "Side", "values": ["LONG", "SHORT"], "required": true },
+    { "key": "asset", "kind": "select", "title": "Asset", "values": ["SOL", "BTC", "ETH"], "required": true },
+    { "key": "qty", "kind": "number", "title": "Quantity", "required": true }
+  ]
+}

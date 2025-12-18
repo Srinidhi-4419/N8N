@@ -1,4 +1,4 @@
-import { type TradingMetadata } from "common/types"
+import { type TradingMetadata } from "common"
 import { Handle, Position } from "@xyflow/react"
 
 export function Lighter({data}:{
@@ -15,3 +15,5 @@ export function Lighter({data}:{
         <Handle type="target" position={Position.Left}></Handle>
     </div>
 }
+
+export type { TradingMetadata }
