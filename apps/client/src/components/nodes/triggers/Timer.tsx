@@ -6,7 +6,7 @@ export function Timer({data,isConnectable}:{
     },
     isConnectable:boolean
 }){
-    return <div className="p-4 border"> 
+    return <div className="p-4 border bg-white rounded-md"> 
     Every {data.metadata.time/3600} seconds
         <Handle  type="source" position={Position.Right}></Handle>
         

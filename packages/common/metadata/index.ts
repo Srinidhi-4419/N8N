@@ -1,8 +1,8 @@
 export const SUPPORTED_ASSETS=["BTC","SOL","ETH"];
 export type TradingMetadata={
-    type:"Long" | "Short",
+    side:"Long" | "Short",
     qty:number,
-    symbol :typeof SUPPORTED_ASSETS
+    asset :typeof SUPPORTED_ASSETS
 }
 export type PriceNodeMetaData={
     asset:string,

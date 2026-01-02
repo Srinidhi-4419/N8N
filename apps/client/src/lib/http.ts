@@ -51,7 +51,11 @@ export async function apiSignin(body:{username:string;password:string}):Promise<
 }
 export async function apiCreateWorkflow(body:any):Promise<IdResponse>{
     console.log(body);
-    const res=await api.post("/workflow",body);
+    const res=await api.post("/workflow",body, {
+        headers: {
+            "Content-Type": "application/json"
+        }
+  });
     return res.data;
 }
 export async function apiUpdateWorkflow(workflowId:string,body:any):Promise<IdResponse>{
@@ -64,7 +68,7 @@ export async function apiGetWorkflow(workflowId:string):Promise<Workflow>{
 }
 
 export async function apiListWorkflows():Promise<Workflow[]>{
-    const res=await api.get<Workflow[]>(`/workflows}`);
+    const res=await api.get<Workflow[]>(`/workflows`);
     return res.data;
 }
 export async function apiListExecutions(workflowId:string):Promise<any[]>{

@@ -45,7 +45,7 @@ const positionSchema=new mongoose.Schema({
 const NodeDataSchema=new mongoose.Schema({
     kind:{
         type:String,
-        enum:["trigger","action"]
+        enum:["TRIGGER","ACTION"]
     },
     metadata:Schema.Types.Mixed
 },{
@@ -58,10 +58,11 @@ const  workflownodesSchema=new mongoose.Schema({
     },
     position:positionSchema,
     credentials:Schema.Types.Mixed,
-    nodeId:{
-        type:mongoose.Types.ObjectId,
-        ref:'Nodes'
-    },
+    nodeId: {
+        type: String,          // "timer", "lighter"
+        required: true
+     },
+
    data:NodeDataSchema,
 },{
     _id:false
@@ -69,7 +70,8 @@ const  workflownodesSchema=new mongoose.Schema({
 const WorkflowSchema=new mongoose.Schema({
     userId:{
         type:mongoose.Types.ObjectId,
-        ref:'User'
+        ref:'User',
+        required: true
     },
     nodes:[workflownodesSchema],
     edges:[EdgeSchema]
@@ -112,25 +114,30 @@ const NodesSchema = new Schema({
   category: { type: String }
 }, { timestamps: true });
 
-const ExecutionSchema=new mongoose.Schema({
-    workflowId:{
-        type:mongoose.Types.ObjectId,
-        required:true,
-        ref:'Workflows'
-    },
-    status:{
-        type:String,
-        enum:["Pending","Success","Failure"]
-    },
-    startTime:{
-        type:Date,
-        default:Date.now(),
-        required:true
-    },
-    endTime:{
-        type:Date
-    }
-})
+const ExecutionSchema = new Schema({
+  workflowId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Workflows",
+    required: true
+  },
+
+  status: {
+    type: String,
+    enum: ["Pending", "Success", "Failure"],
+    default: "Pending"
+  },
+
+  startTime: {
+    type: Date,
+    default: Date.now,
+    required: true
+  },
+
+  endTime: {
+    type: Date
+  }
+});
+
 export const UserModel=mongoose.model("User",userschema);
 export const WorkflowModel=mongoose.model("Workflows",WorkflowSchema)
 export const NodesModel=mongoose.model("Nodes",NodesSchema)

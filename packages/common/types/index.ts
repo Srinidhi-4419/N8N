@@ -8,7 +8,7 @@ export const CreateWorkflowSchema=z.object({
     nodes:z.array(z.object({
         nodeId:z.string(),
         data:z.object({
-            kind:z.enum(["action","trigger"]),
+            kind:z.enum(["ACTION","TRIGGER"]),
             metadata:z.any()
         }),
         credentials:z.any(),

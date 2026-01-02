@@ -56,7 +56,8 @@ app.post("/signin", async (req, res) => {
     const token = jwt.sign({ id: user._id }, JWT_SECRET!);
     res.json({ token });
 
-  } catch {
+  } catch(error) {
+      console.error("Signin error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -72,12 +73,15 @@ app.get("/nodes/:type", async (req, res) => {
 app.post("/workflow",authMiddleware,async(req:any,res)=>{
     const userId=req.userid;
     const {success,data}=CreateWorkflowSchema.safeParse(req.body);
+    console.log("BODY:", req.body);
+  console.log("USERID:", req.userid);
     if(!success){
         res.status(403).json({
             message:"Incorrect Inputs"
         })
         return;
     }
+    
     try{
         const workflow=await WorkflowModel.create({
             userId,
@@ -88,6 +92,7 @@ app.post("/workflow",authMiddleware,async(req:any,res)=>{
             id:workflow._id
         })
     }catch(e){
+      console.error("Workflow create error:", e);
             res.status(411).json({
                 message:"Failed to craete workflow"
             })
@@ -151,6 +156,7 @@ app.get("/workflow/executions/:workgflowId",authMiddleware,async(req,res)=>{
 })
 app.get("/workflows",authMiddleware,async(req:any,res)=>{
     const workflow=await WorkflowModel.find({userId:req.userid});
+    console.log("reached here");
     return res.json(workflow);
 ;
 })

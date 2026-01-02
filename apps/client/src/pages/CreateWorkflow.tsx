@@ -32,7 +32,7 @@ export type NodeKind =
   | "backpack"
   | "lighter";
 
-const nodeTypes = {
+export const nodeTypes = {
   "price-trigger": PriceTrigger,
   timer: Timer,
   lighter: Lighter,
@@ -44,7 +44,7 @@ interface NodeType {
   id: string;
   type: NodeKind;
   data: {
-    kind: "action" | "trigger";
+    kind: "ACTION" | "TRIGGER";
     metadata: any;
   };
   position: { x: number; y: number };
@@ -70,7 +70,7 @@ export default function CreateWorkflow() {
 
   const [published, setPublished] = useState(false);
   const [workflowId, setWorkflowId] = useState<string | null>(null);
-
+  console.log("this is nodes",nodes)
   const onNodesChange = useCallback(
     (changes: any) =>
       setNodes((snapshot) => applyNodeChanges(changes, snapshot)),
@@ -109,7 +109,7 @@ export default function CreateWorkflow() {
       nodeId: n.type ?? n.id,   // machine id (lighter) or other string identifier
       id: n.id,                 // unique instance id on canvas
       data: {
-        kind: n.data.kind,      // "action" | "trigger" (must be lowercase)
+        kind: n.data.kind.toUpperCase(),     // "action" | "trigger" (must be lowercase)
         metadata: n.data.metadata ?? {},
       },
       credentials: n.data?.credentials ?? {}, // must be present (z.any)

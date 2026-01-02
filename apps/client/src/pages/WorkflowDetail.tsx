@@ -2,11 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { apiGetWorkflow, type Workflow } from "../lib/http";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Background, BackgroundVariant, Controls, ReactFlow } from "@xyflow/react";
+import { nodeTypes } from "./CreateWorkflow";
+// import { Background, Controls, ReactFlow } from "@xyflow/react";
 
 export default function WorkflowDetail() {
   const { id } = useParams();
   const [workflow, setWorkflow] = useState<Workflow | null>(null);
+  const navigate=useNavigate();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,42 +26,35 @@ export default function WorkflowDetail() {
     }
     load();
   }, [id]);
+  console.log(workflow)
+  const rfNodes = workflow?.nodes.map((node) => ({
+  ...node,
+  type: node.nodeId,
+}));
 
   if (loading) return <p className="p-8">Loading...</p>;
   if (!workflow) return <p className="p-8">Workflow not found</p>;
-
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow">
-        <h1 className="text-3xl font-bold mb-4">Workflow Detail</h1>
-
-        <p className="text-gray-600 mb-6">
-          Workflow ID: {workflow._id}
-        </p>
-
-        <h2 className="text-xl font-semibold mb-2">Nodes</h2>
-        <div className="space-y-3 mb-8">
-          {workflow.nodes.map((node) => (
-            <div key={node.id} className="border p-4 rounded-lg bg-gray-50">
-              <p className="font-semibold">Node ID: {node.id}</p>
-              <p>Node Type: {node.data.kind}</p>
-              <p>Template ID: {node.nodeId}</p>
-              <p>Position: ({node.position.x}, {node.position.y})</p>
-            </div>
-          ))}
+    <div className="w-screen h-screen flex flex-col bg-gray-100">
+     <div className="flex justify-between p-4">
+        <h1 className="font-semibold text-[30px]">Workflow</h1>
+        <div className="flex space-x-4">
+          <button  className="font-semibold bg-white  p-2 rounded-md cursor-pointer">View Executions</button>
+          <button onClick={()=>{navigate('/dashboard')}} className="font-semibold bg-white  p-2 rounded-md cursor-pointer">Back to Dashboard</button>
         </div>
-
-        <h2 className="text-xl font-semibold mb-2">Edges</h2>
-        <div className="space-y-3">
-          {workflow.edges.map((edge) => (
-            <div key={edge.id} className="border p-4 rounded-lg bg-gray-50">
-              <p className="font-semibold">Edge ID: {edge.id}</p>
-              <p>Source: {edge.source}</p>
-              <p>Target: {edge.target}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+     </div>
+    <div className="text-black  pl-4 font-semibold mb-10">
+      ID:{id}
+    </div>
+    <ReactFlow
+      nodeTypes={nodeTypes}
+      nodes={rfNodes}
+      edges={workflow.edges}
+      fitView
+    >
+      <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
+        <Controls />
+      </ReactFlow>
     </div>
   );
 }

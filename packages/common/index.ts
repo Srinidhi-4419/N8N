@@ -1,2 +1,2 @@
-export * from "./metadata/index"
-export * from "./types/index"
+export * from "./metadata/index.js"
+export * from "./types/index.js"

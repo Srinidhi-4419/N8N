@@ -6,11 +6,12 @@ export function Lighter({data}:{
         metadata:TradingMetadata
     }
 }){
-    return <div className="p-4 border">
-        Lighter Trade
-        <div>{data.metadata.type}</div>
-        <div>{data.metadata.qty}</div>
-        <div>{data.metadata.symbol}</div>
+    console.log(data)
+    return <div className="p-4 border bg-white rounded-md">
+        <span className="font-semibold">Lighter trade</span>
+        <div>Type:{data.metadata.side}</div>
+        <div>Qty:{data.metadata.qty}</div>
+        <div>Symbol:{data.metadata.asset}</div>
         <Handle type="source" position={Position.Right}></Handle>
         <Handle type="target" position={Position.Left}></Handle>
     </div>

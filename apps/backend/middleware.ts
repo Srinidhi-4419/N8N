@@ -9,7 +9,8 @@ export function authMiddleware(
   next: NextFunction
 ) {
   const header = req.headers["authorization"];
-
+ console.log("AUTH MIDDLEWARE HIT");
+  console.log("HEADERS:", req.headers.authorization);
   if (!header) {
     res.status(401).json({ message: "No token provided" });
     return;
