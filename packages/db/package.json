@@ -4,14 +4,14 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-   "exports": {
+  "exports": {
     ".": "./dist/index.js"
   },
   "scripts": {
     "build": "tsc"
   },
   "dependencies": {
-    "mongoose": "^9.0.0"
+    "mongoose": "^9.1.1"
   },
   "devDependencies": {
     "@types/mongoose": "^5.11.96",

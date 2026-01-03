@@ -1,16 +1,14 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "index.js",
-  
   "scripts": {
     "build": "tsc",
     "seed": "node dist/seed.js",
     "start": "npm run seed && node dist/index.js"
-  }
-,
-
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -18,10 +16,13 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "common": "file:../../packages/common",
     "cors": "^2.8.5",
-    "db": "*",
+    "db": "file:../../packages/db",
+    "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^9.1.1"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",

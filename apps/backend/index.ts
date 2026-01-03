@@ -1,16 +1,36 @@
-import express from "express"
-import mongoose from "mongoose"
-import {ExecutionModel, NodesModel, UserModel, WorkflowModel} from "db"
-import {CreateWorkflowSchema, SignupSchema} from "common"
-import jwt from "jsonwebtoken"
+import express from "express";
+import cors from "cors";
+import jwt from "jsonwebtoken";
 import "dotenv/config";
-import { authMiddleware } from "./middleware";
-import cors from "cors"
-mongoose.connect(process.env.mongo_url!);
-const app=express();
+
+import {
+  connectDB,
+  ExecutionModel,
+  NodesModel,
+  UserModel,
+  WorkflowModel
+} from "db";
+
+import {
+  CreateWorkflowSchema,
+  SignupSchema
+} from "common/types";
+
+import { authMiddleware } from "./middleware.js";
+
+const app = express();
+
+/* ===================== ENV VALIDATION ===================== */
+const MONGO_URL = process.env.MONGO_URL;
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!MONGO_URL) throw new Error("MONGO_URL missing");
+if (!JWT_SECRET) throw new Error("JWT_SECRET missing");
+await connectDB(MONGO_URL);
+console.log("MongoDB connected (server)");
 app.use(cors())
 app.use(express.json())
-const JWT_SECRET=process.env.JWT_SECRET;
+
 app.post("/signup",async(req,res)=>{
     const {success,data}=SignupSchema.safeParse(req.body);
     if(!success){

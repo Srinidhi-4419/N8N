@@ -24,7 +24,7 @@
     "react-router-dom": "^7.9.6",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.17",
-   "common": "workspace:*"
+    "common": "file:../../packages/common"
 
   },
   "devDependencies": {
