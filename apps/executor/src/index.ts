@@ -34,6 +34,7 @@ async function main() {
                 });
               await execute(workflow.nodes, workflow.edges);
               execution.endTime=new Date();
+              execution.status="Success";
               await execution.save();
             } 
             break;

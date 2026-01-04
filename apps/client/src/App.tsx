@@ -6,6 +6,7 @@ import SignUp from "./pages/SignUp";
 import SignIn from "./pages/Signin";
 import Dashboard from "./pages/Dashboard";
 import WorkflowDetail from "./pages/WorkflowDetail";
+import WorkflowExecutions from "./pages/WorkflowExecutions";
 
 function App() {
  
@@ -21,7 +22,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard/>}/>
         <Route path="/create-workflow" element={<CreateWorkflow/>}/>
         <Route path="/workflow/:id" element={<WorkflowDetail/>}/>
-        <Route path="/workflow/:id/executions" element={<WorkflowDetail/>}/>
+        <Route path="/workflow/:id/executions" element={<WorkflowExecutions/>}/>
       </Routes>
       </BrowserRouter>
     </>
